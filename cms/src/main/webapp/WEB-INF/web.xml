@@ -17,17 +17,13 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
-	<!-- 所有以.html和.json的请求都由dispatcherServlet来处理的配置 -->
+	<!-- 任何类型的请求（.htm .html .json .jsp）都由dispatcherServlet来处理的配置 -->
+	<!-- 在 applicationContext.xml 中配置了jsp视图解析器  和  freemarker 解析器-->
 	<servlet-mapping>
 		<servlet-name>spring</servlet-name>
-		<url-pattern>*.htm</url-pattern>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>spring</servlet-name>
-		<url-pattern>*.json</url-pattern>
-	</servlet-mapping>
-
+	
 	<filter>
 		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
