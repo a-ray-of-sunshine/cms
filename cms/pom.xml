@@ -168,6 +168,7 @@
 
 	<build>
 		<defaultGoal>compile</defaultGoal>
+		<pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -314,6 +315,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+		</pluginManagement>
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>
@@ -326,6 +328,8 @@
 				<includes>
 					<include>applicationContext.xml</include>
 					<include>log4j.properties</include>
+					<include>logging.properties</include>
+					<include>shishuocms.properties</include>
 				</includes>
 			</resource>
 		</resources>
