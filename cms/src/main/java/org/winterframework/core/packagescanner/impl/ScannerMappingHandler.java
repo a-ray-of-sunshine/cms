@@ -46,8 +46,6 @@ public class ScannerMappingHandler implements IPackageScanner {
 		File file = new File(this.packagePath + "/applicationContext.xml");
 		String pack = Utils.getProperyValue(file, "component-scan", "base-package");
 		String packageName = Utils.dotToSlash(pack);
-//		String classPath = this.getClass().getResource("").getPath();
-//		String classPath = "/E:/develop/java/cms/target/classes/";
 		String classPath = this.packagePath;
 		
 		String scannerPath = classPath + packageName;
