@@ -1,10 +1,11 @@
 package org.winterframework.core.packagescanner;
 
-import java.io.File;
+import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings(value = {"rawtypes"})
+
 public interface IPackageScanner {
 
-	Map getMappingHandler(File packageFolder);
+	void init();
+	List<Map<String, Map<String, Object>>> getHandlerMapper();
 }

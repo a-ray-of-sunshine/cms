@@ -12,24 +12,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.winterframework.core.packagescanner.IPackageScanner;
 import org.winterframework.util.Utils;
 
-@SuppressWarnings(value = {"rawtypes"})
 public class ScannerMappingHandler implements IPackageScanner {
 	
 	private List<Map<String, Map<String, Object>>> handlerMapper = new ArrayList<Map<String, Map<String, Object>>>();
+	
+	private String packagePath;
+	
+	public ScannerMappingHandler(String packagePath) {
+		super();
+		this.packagePath = packagePath;
+	}
+
+	public List<Map<String, Map<String, Object>>> getHandlerMapper() {
+		return handlerMapper;
+	}
 
 	@Override
-	public Map getMappingHandler(File packageFolder){
-		Map mappingHandler = new HashMap();
+	public void init(){
 		List<String> nameList = this.getClassFileNameList();
 		
 		try {
 			initHandlerMapper(nameList);
-//			System.out.println(handlerMapper);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		return mappingHandler;
 	}
 	
 	/**
@@ -37,10 +43,12 @@ public class ScannerMappingHandler implements IPackageScanner {
 	 * @return
 	 */
 	private List<String> getClassFileNameList(){
-		String pack = Utils.getProperyValue("component-scan", "base-package");
+		File file = new File(this.packagePath + "/applicationContext.xml");
+		String pack = Utils.getProperyValue(file, "component-scan", "base-package");
 		String packageName = Utils.dotToSlash(pack);
 //		String classPath = this.getClass().getResource("").getPath();
-		String classPath = "/E:/develop/java/cms/target/classes/";
+//		String classPath = "/E:/develop/java/cms/target/classes/";
+		String classPath = this.packagePath;
 		
 		String scannerPath = classPath + packageName;
 		scannerPath = scannerPath.substring(1, scannerPath.length());
