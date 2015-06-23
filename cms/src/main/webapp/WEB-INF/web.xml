@@ -21,7 +21,26 @@
 	<!-- 在 applicationContext.xml 中配置了jsp视图解析器  和  freemarker 解析器-->
 	<servlet-mapping>
 		<servlet-name>spring</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>*.hmtl</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>*.json</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>DoHandler</servlet-name>
+		<servlet-class>org.winterframework.core.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>DoHandler</servlet-name>
+		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 	
 	<filter>
