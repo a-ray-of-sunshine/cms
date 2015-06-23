@@ -19,10 +19,9 @@ public class Utils {
 		return new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
 	}
 	
-	public static String getProperyValue(String elementName, String propertyName){
+	public static String getProperyValue(File file, String elementName, String propertyName){
 		String value = "";
 		SAXReader reader = new SAXReader();
-		File file = new File("src/main/resources/applicationContext.xml");
 		try {
 			Document document = reader.read(file);
 			Element root = document.getRootElement();
