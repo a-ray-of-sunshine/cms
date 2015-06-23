@@ -1,7 +1,6 @@
 package org.winterframework.util;
 
 import java.io.File;
-import java.util.Iterator;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -31,7 +30,7 @@ public class Utils {
 			value = node.attributeValue(propertyName);
 			
 		} catch (DocumentException e) {
-			return "";
+			
 		}
 		
 		return value;
