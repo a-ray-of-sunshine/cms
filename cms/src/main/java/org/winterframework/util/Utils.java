@@ -1,6 +1,7 @@
 package org.winterframework.util;
 
 import java.io.File;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -34,5 +35,39 @@ public class Utils {
 		}
 		
 		return value;
+	}
+	
+	public static String dotToSlash(String dotStr){
+		String slashStr = "";
+		
+		slashStr = dotStr.replaceAll("\\.", "/");
+		
+		return slashStr;
+	}
+	
+	public static void searchFile(File dir, List<String> fileName, String parentName){
+		
+		// 已经是文件了
+		String name = dir.getName();
+		if(dir.isFile()){
+			if(name.endsWith("class")){
+				name = name.substring(0, name.lastIndexOf("."));
+				if(!"".equals(parentName)){
+					name = parentName + "." + name;
+				}
+				fileName.add(name);
+			}
+			return;
+		}
+		
+		File[] files = dir.listFiles();
+		for(File file: files){
+			String pName = file.getParentFile().getName();
+			if(!"".equals(parentName)){
+				pName = parentName + "." + pName;
+			}
+			searchFile(file, fileName, pName);
+		}
+		
 	}
 }
