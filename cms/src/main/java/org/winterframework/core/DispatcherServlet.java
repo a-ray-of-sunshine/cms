@@ -1,11 +1,17 @@
 package org.winterframework.core;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.winterframework.core.beanfactory.IBeanWired;
+import org.winterframework.core.beanfactory.impl.BeanWired;
+import org.winterframework.core.beanfactory.impl.ParamBeanWired;
 import org.winterframework.core.packagescanner.IPackageScanner;
 import org.winterframework.core.packagescanner.impl.ScannerMappingHandler;
 
@@ -30,6 +36,8 @@ public class DispatcherServlet extends FrameworkServlet {
 		String path =  this.handleURI(resourcePath);
 
 		Map<String, Object> HandlerMap = this.getHandlerMap(path);
+		Object result = this.dispatch(request, response, HandlerMap);
+		System.out.println(result);
 	}
 
 	private Map<String, Object> getHandlerMap(String path){
@@ -48,8 +56,50 @@ public class DispatcherServlet extends FrameworkServlet {
 	private String handleURI(String uri){
 		String path = "";
 		
-		path = uri.substring(uri.indexOf("/", 1), uri.indexOf("."));
+		path = uri.substring(uri.indexOf("/", 1), uri.lastIndexOf("."));
 		
 		return path;
+	}
+	
+	// 分发请求
+	private Object dispatch(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> HandlerMap){
+		Object obj = null;
+		
+		Class<?> clazz = (Class<?>) HandlerMap.get("Controller");
+		Method method = (Method) HandlerMap.get("Handler");
+		
+		// 1. 实例化 action
+		IBeanWired beanfactory = new BeanWired();
+		Map<Class<?>, Class<?>> fieldType = new HashMap<Class<?>, Class<?>>();
+		
+		Object action = new Object();
+		try {
+			fieldType.put(Class.forName("org.winterframework.core.beanfactory.IAnminal"), Class.forName("org.winterframework.core.beanfactory.Dog"));
+			action = beanfactory.beanWired(clazz, clazz.getAnnotations(), fieldType);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		// 2. 装配Method对象的参数，返回一个参数对象数组
+		ParamBeanWired paramBeanWired = new ParamBeanWired(request.getParameterMap(), method);
+		Object[] args = paramBeanWired.getMethodParameters(request, response);
+		
+		// 3. 在obj上调用method, 参数是一个对象数组
+		try {
+			obj = method.invoke(action, args);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		
+		return obj;
 	}
 }
