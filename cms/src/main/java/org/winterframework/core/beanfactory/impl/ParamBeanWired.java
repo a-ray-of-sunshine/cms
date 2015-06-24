@@ -1,14 +1,16 @@
 package org.winterframework.core.beanfactory.impl;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.ui.ModelMap;
 import org.winterframework.core.beanfactory.IBeanWired;
 
 /**
@@ -40,10 +42,18 @@ public class ParamBeanWired implements IBeanWired {
 			Class<?> fieldClazz = fieldsClass[i]; 			// 字段的 Class
 			Annotation[] fieldAnnotation = annotations[i];	// 字段上的 Annotation
 			
+			// 1. 初始化默认字段
+			if(isDefaultField(fieldClazz)){
+				Object obj = initDefaultField(fieldClazz, request, response);
+				objs[i] = obj;
+				continue;
+			}
+			
+			// 2. 装配其他字段
 			try {
 				Object obj = this.beanWired(fieldClazz, fieldAnnotation, fieldType);
 				objs[i] = obj;
-			} catch (Exception e) {
+			} catch (Exception e){
 				continue;
 			}
 		}
@@ -59,16 +69,39 @@ public class ParamBeanWired implements IBeanWired {
 		T instance = clazz.newInstance();
 
 		// 2. 对象初始化
-		
+		initObj(instance, clazzAnnotation);
 		return instance;
 	}
 	
-	private void initField(Field field, Object instance, Class<?> typeClazz, Annotation[] fieldAnnotations)
+	private void initObj(Object instance, Annotation[] fieldAnnotations)
 			throws IllegalArgumentException, IllegalAccessException,
 			InstantiationException {
-		System.out.println(field);
-		System.out.println(typeClazz);
+		System.out.println(instance);
 		System.out.println(fieldAnnotations);
+	}
+	
+	private boolean isDefaultField(Class<?> clazz){
+		
+		if(clazz.equals(HttpServletRequest.class) 
+				|| clazz.equals(HttpServletResponse.class)
+				|| clazz.equals(ModelMap.class)){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private Object initDefaultField(Class<?> clazz, ServletRequest request, ServletResponse response){
+		
+		if(clazz.equals(HttpServletRequest.class)){
+			return request;
+		}else if(clazz.equals(HttpServletResponse.class)){
+			return response;
+		}else if(clazz.equals(ModelMap.class)){
+			return new HashMap();
+		}
+		
+		return null;
 	}
 
 }
