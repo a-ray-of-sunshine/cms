@@ -19,7 +19,6 @@ import org.winterframework.core.beanfactory.IBeanWired;
  * 函数参数bean的装配，装配过程中可能有初始化参数传递进来
  * 
  */
-@SuppressWarnings("unused")
 public class ParamBeanWired implements IBeanWired {
 
 	private Map<String, String[]> parametersMap;
@@ -125,7 +124,7 @@ public class ParamBeanWired implements IBeanWired {
 		for(String key : this.parametersMap.keySet()){
 			String firstLetter = key.substring(0, 1);
 			String subLetter = key.substring(1, key.length());
-			String methodName = "set" + firstLetter.toUpperCase() + subLetter.toLowerCase();
+			String methodName = "set" + firstLetter.toUpperCase() + subLetter;
 			
 			map.put(methodName, this.parametersMap.get(key)[0]);
 		}
