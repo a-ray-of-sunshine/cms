@@ -44,8 +44,7 @@ public class ParamBeanWired implements IBeanWired {
 			
 			// 1. 初始化默认字段
 			if(isDefaultField(fieldClazz)){
-				Object obj = initDefaultField(fieldClazz, request, response);
-				objs[i] = obj;
+				objs[i] = initDefaultField(fieldClazz, request, response);
 				continue;
 			}
 			
@@ -98,7 +97,7 @@ public class ParamBeanWired implements IBeanWired {
 		}else if(clazz.equals(HttpServletResponse.class)){
 			return response;
 		}else if(clazz.equals(ModelMap.class)){
-			return new HashMap();
+			return new ModelMap();
 		}
 		
 		return null;
