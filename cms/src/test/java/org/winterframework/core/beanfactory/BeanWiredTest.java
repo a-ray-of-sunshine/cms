@@ -16,14 +16,16 @@ public class BeanWiredTest {
 		Map<Class<?>, Class<?>> fieldType = new HashMap<Class<?>, Class<?>>();
 		
 		try {
+			Class<?> clazz = People.class;
 			fieldType.put(Class.forName("org.winterframework.core.beanfactory.IAnminal"), Class.forName("org.winterframework.core.beanfactory.Dog"));
-			People people = beanfactory.beanWired(People.class, fieldType);
+			People people = (People)beanfactory.beanWired(clazz, clazz.getAnnotations(), fieldType);
 			
 			System.out.println(people);
 			System.out.println(people.getDog());
 			System.out.println(people.getMaster());
 			
-			ArticleAction action = beanfactory.beanWired(ArticleAction.class, fieldType);
+			clazz = ArticleAction.class;
+			ArticleAction action = (ArticleAction)beanfactory.beanWired(clazz, clazz.getAnnotations(), fieldType);
 			System.out.println(action);
 			
 		} catch (InstantiationException e) {
