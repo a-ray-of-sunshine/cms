@@ -45,9 +45,7 @@ public class BeanWired implements IBeanWired {
 				field.getAnnotation(Autowired.class);
 				
 				// 3. 注入实例字段
-				// 设置访问级别，确保可以正常访问
-				field.setAccessible(true);
-				field.set(instance, typeClazz.newInstance());
+				this.initField(field, instance, typeClazz);
 			} catch (NullPointerException e) {
 				// 说明该字段不需要自动装配
 				continue;
@@ -57,4 +55,10 @@ public class BeanWired implements IBeanWired {
 		return instance;
 	}
 
+	@Override
+	public void initField(Field field, Object instance, Class<?> typeClazz) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
+		// 设置访问级别，确保可以正常访问
+		field.setAccessible(true);
+		field.set(instance, typeClazz.newInstance());
+	}
 }
