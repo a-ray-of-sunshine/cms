@@ -1,6 +1,7 @@
 package org.winterframework.core.beanfactory.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,14 +22,14 @@ import org.winterframework.core.beanfactory.IBeanWired;
 @SuppressWarnings("unused")
 public class ParamBeanWired implements IBeanWired {
 
-	private Map<String, String[]> ParametersMap;
+	private Map<String, String[]> parametersMap;
 	private Method method;
 	private Map<Class<?>, Class<?>> fieldType = new HashMap<Class<?>, Class<?>>();
 	
 	public ParamBeanWired(Map<String, String[]> parametersMap,
 			Method method) {
 		super();
-		this.ParametersMap = parametersMap;
+		this.parametersMap = parametersMap;
 		this.method = method;
 	}
 
@@ -74,9 +75,24 @@ public class ParamBeanWired implements IBeanWired {
 	
 	private void initObj(Object instance, Annotation[] fieldAnnotations)
 			throws IllegalArgumentException, IllegalAccessException,
-			InstantiationException {
-		System.out.println(instance);
-		System.out.println(fieldAnnotations);
+			InstantiationException{
+		
+		Class<?> clazz = instance.getClass();
+		Method[] methods = clazz.getDeclaredMethods();
+		
+		Map<String, String> methodMap = this.getMethodAndValue();
+		for(Method method : methods){
+			String name = method.getName();
+			for(String methodName : methodMap.keySet()){
+				if(name.equals(methodName)){
+					try {
+						method.invoke(instance, methodMap.get(methodName));
+					} catch (InvocationTargetException e) {
+						continue;
+					}
+				}
+			}
+		}
 	}
 	
 	private boolean isDefaultField(Class<?> clazz){
@@ -101,6 +117,20 @@ public class ParamBeanWired implements IBeanWired {
 		}
 		
 		return null;
+	}
+	
+	private Map<String, String> getMethodAndValue(){
+		Map<String, String> map = new HashMap<String, String>();
+		
+		for(String key : this.parametersMap.keySet()){
+			String firstLetter = key.substring(0, 1);
+			String subLetter = key.substring(1, key.length());
+			String methodName = "set" + firstLetter.toUpperCase() + subLetter.toLowerCase();
+			
+			map.put(methodName, this.parametersMap.get(key)[0]);
+		}
+		
+		return map;
 	}
 
 }
