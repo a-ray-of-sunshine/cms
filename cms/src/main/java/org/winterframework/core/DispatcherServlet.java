@@ -26,7 +26,30 @@ public class DispatcherServlet extends FrameworkServlet {
 	@Override
 	protected void doDispatch(HttpServletRequest request,
 			HttpServletResponse response) {
-		System.out.println(this.mappingHandler);
+		String resourcePath = request.getRequestURI();
+		String path =  this.handleURI(resourcePath);
+
+		Map<String, Object> HandlerMap = this.getHandlerMap(path);
 	}
 
+	private Map<String, Object> getHandlerMap(String path){
+		Map<String, Object> map = null;
+		
+		for(Map<String, Map<String, Object>> key : mappingHandler){
+			if(null != key.get(path)){
+				map = key.get(path);
+				break;
+			}
+		}
+		
+		return map;
+	}
+	
+	private String handleURI(String uri){
+		String path = "";
+		
+		path = uri.substring(uri.indexOf("/", 1), uri.indexOf("."));
+		
+		return path;
+	}
 }
