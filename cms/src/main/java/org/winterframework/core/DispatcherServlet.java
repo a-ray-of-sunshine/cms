@@ -1,11 +1,13 @@
 package org.winterframework.core;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +39,16 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		Map<String, Object> HandlerMap = this.getHandlerMap(path);
 		Object result = this.dispatch(request, response, HandlerMap);
-		System.out.println(result);
+		
+		String forwardPath = "/jsp/" + result + ".jsp";
+		System.out.println(forwardPath);
+		try {
+			request.getRequestDispatcher(String.valueOf(forwardPath)).forward(request, response);
+		} catch (ServletException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private Map<String, Object> getHandlerMap(String path){
