@@ -1,6 +1,7 @@
 package org.winterframework.core.beanfactory.impl;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.winterframework.core.beanfactory.IBeanWired;
 
@@ -11,10 +12,26 @@ import org.winterframework.core.beanfactory.IBeanWired;
  */
 public class ParamBeanWired extends IBeanWired {
 
+	private Map<String, String[]> ParametersMap;
+	private Class<?>[] ParametersType;
+	
+	protected ParamBeanWired(Map<String, String[]> parametersMap,
+			Class<?>[] parametersType) {
+		super();
+		ParametersMap = parametersMap;
+		ParametersType = parametersType;
+	}
+
 	@Override
 	protected void initField(Field field, Object instance, Class<?> typeClazz)
 			throws IllegalArgumentException, IllegalAccessException,
 			InstantiationException {
+	}
+	
+	public Object[] getMethodParameters(){
+		Object[] objs = null;
+		
+		return objs;
 	}
 
 }
