@@ -63,7 +63,7 @@ public class ParamBeanWired implements IBeanWired {
 	@Override
 	public <T> T beanWired(Class<T> clazz, Annotation[] clazzAnnotation,
 			Map<Class<?>, Class<?>> fieldType) throws InstantiationException,
-			IllegalAccessException {
+			IllegalAccessException{
 		// 1. 构建对象的实例
 		T instance = clazz.newInstance();
 
@@ -85,7 +85,17 @@ public class ParamBeanWired implements IBeanWired {
 			for(String methodName : methodMap.keySet()){
 				if(name.equals(methodName)){
 					try {
-						method.invoke(instance, methodMap.get(methodName));
+						// 这里在进行方法调用的时候要注意，将参数的类型进行正确的转换，否则这个invoke方法就调用失败
+						// 例如int类型的参数，就要进行转换。
+						Object param = methodMap.get(methodName);
+						try {
+							param = getParam(method, param);
+						} catch (NoSuchMethodException e) {
+							param = methodMap.get(methodName);
+						} catch (SecurityException e) {
+							param = methodMap.get(methodName);
+						}
+						method.invoke(instance, param);
 					} catch (InvocationTargetException e) {
 						continue;
 					}
@@ -130,6 +140,42 @@ public class ParamBeanWired implements IBeanWired {
 		}
 		
 		return map;
+	}
+	
+	
+	private static Object getParam(Method method, Object param) throws 
+			NoSuchMethodException, SecurityException, 
+			IllegalAccessException, IllegalArgumentException, 
+			InvocationTargetException{
+		Object obj = param;
+		
+		Class<?>[] clazzs = method.getParameterTypes();
+		Class<?>  paramClass; 
+		if(null != clazzs & clazzs.length > 0){
+			paramClass = clazzs[0];
+			// 判断参数是否是原生数据类
+			if(null != (paramClass = getParamClass(paramClass))){
+				Method valMethod = paramClass.getDeclaredMethod("valueOf", String.class);
+				obj = valMethod.invoke(null, param.toString());
+			}
+		}
+		
+		return obj;
+	}
+	
+	private static Class<?> getParamClass(Class<?> paramClass){
+		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+		
+		map.put("int", Integer.class);
+		map.put("boolean", Boolean.class);
+		map.put("byte", Byte.class);
+		map.put("char", Character.class);
+		map.put("short", Short.class);
+		map.put("float", Float.class);
+		map.put("double", Double.class);
+		map.put("long", Long.class);
+		
+		return map.get(paramClass.getName());
 	}
 
 }
