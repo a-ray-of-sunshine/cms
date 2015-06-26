@@ -86,7 +86,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		
 		Object action = new Object();
 		try {
-			fieldType.put(Class.forName("org.winterframework.core.beanfactory.IAnminal"), Class.forName("org.winterframework.core.beanfactory.Dog"));
+			fieldType.put(Class.forName("org.winterframework.core.entity.IAnminal"), Class.forName("org.winterframework.core.entity.Dog"));
 			action = beanfactory.beanWired(clazz, clazz.getAnnotations(), fieldType);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
