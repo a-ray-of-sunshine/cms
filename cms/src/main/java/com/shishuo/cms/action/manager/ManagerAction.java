@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.winterframework.core.entity.Dog;
 
 import com.shishuo.cms.dao.AdminDao;
 import com.shishuo.cms.entity.Admin;
@@ -25,8 +26,12 @@ public class ManagerAction {
 	
 	@RequestMapping("index")
 	public String toIndex(ModelMap modelMap, 
-			HttpServletRequest request, HttpServletResponse response){
-		System.out.println(request.getParameter("hello"));
+			HttpServletRequest request, HttpServletResponse response, Dog dog, String hello){
+		// http://localhost:8080/cms/manager/index.do?hello=world&dogName=xiaoxiao&age=12&weight=43.1
+		System.out.println(dog.getDogName());
+		System.out.println(dog.getAge());
+		System.out.println(dog.getWeight());
+		System.out.println(hello);
 		return "index";
 	}
 	
